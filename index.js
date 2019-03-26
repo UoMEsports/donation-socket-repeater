@@ -31,11 +31,15 @@ const conf = convict({
 }).getProperties();
 
 app.use(bodyParser.json());
-server.listen(conf.port);
+server.listen(conf.port, '127.0.0.1');
 console.log(`Listening on port ${conf.port}.`);
 
 app.get('/', (req, res) => {
-	res.send('Running OK');
+	if (conf.debug) {
+		res.send('Running DEBUG');
+	} else {
+		res.send('Running OK');
+	}
 });
 
 // PayPal donations from the tracker are POSTed to us as they come in.
@@ -51,6 +55,8 @@ app.post(`/donation`, (req, res) => {
 
 	const data = {
 		name: req.body.donor__visiblename,
+		visibility: req.body.donor__visibility,
+		comment: req.body.comment,
 		rawAmount: req.body.amount,
 		newTotal: req.body.new_total,
 		domain: req.body.domain
