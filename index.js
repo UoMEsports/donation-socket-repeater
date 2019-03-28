@@ -44,7 +44,11 @@ app.get('/', (req, res) => {
 
 // PayPal donations from the tracker are POSTed to us as they come in.
 app.post(`/donation`, (req, res) => {
-	if (req.query.key !== conf.secretKey) {
+	if (req.body.key !== conf.secretKey) {
+		if (conf.debug) {
+			console.log('failed to post donation with body: ');
+			console.log(req.body);
+		}
 		res.sendStatus(403);
 		return;
 	}
