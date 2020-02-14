@@ -6,7 +6,7 @@ const server = require('http').Server(app);
 const bodyParser = require('body-parser');
 const io = require('socket.io')(server);
 const convict = require('convict');
-const conf = convict({
+let conf = convict({
 	port: {
 		doc: 'The port on which to listen for POSTs from the tracker.',
 		format: 'port',
@@ -28,7 +28,9 @@ const conf = convict({
 		env: 'DEBUG',
 		arg: 'debug'
 	}
-}).getProperties();
+})
+	.loadFile('./config.json')
+	.getProperties();
 
 app.use(bodyParser.json());
 server.listen(conf.port, '127.0.0.1');
